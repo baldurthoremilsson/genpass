@@ -1,0 +1,99 @@
+<!doctype html>
+<html>
+  <head>
+    <title>password generator</title>
+    <style type='text/css'>
+      body {
+        text-align: center;
+        font-family: monospace;
+      }
+      a {
+        margin: 0 5px;
+      }
+    </style>
+    <script type='text/javascript'>
+      var DEFAULTLENGTH = 30;
+
+      function generatePassword(chars, length) {
+        var pw = '';
+        for(var i = 0; i < length; i++) {
+          pw += chars.charAt(Math.random() * chars.length);
+        }
+        return pw;
+      }
+
+      function getLength() {
+        var len = parseInt(window.location.hash.substr(1));
+        if(len)
+          return len;
+        return DEFAULTLENGTH;
+      }
+
+      function insertLinks() {
+        for(var i = 10; i <= 60; i += 10) {
+          var a = document.createElement('a');
+          a.href = '#' + i;
+          a.appendChild(document.createTextNode(i + ' letters'));
+          (function(length) {
+            a.addEventListener('click', function() {populate(length);});
+          })(i);
+          document.body.appendChild(a);
+        }
+      }
+
+      function populate(length) {
+        var LOWER = 'abcdefghijklmnopqrstuvwxyz';
+        var UPPER = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        var DIGITS = '0123456789';
+        var SPECIAL = '!@#$%^&*()-_=+{}[]|?<>';
+        var COUNT = 10;
+
+        var groups = [{
+          title: 'lowercase',
+          alphabet: LOWER
+        },{
+          title: 'uppercase',
+          alphabet: UPPER
+        },{
+          title: 'lower+upper',
+          alphabet: LOWER + UPPER
+        },{
+          title: 'lower+digits',
+          alphabet: LOWER + DIGITS
+        },{
+          title: 'upper+digits',
+          alphabet: UPPER + DIGITS
+        },{
+          title: 'lower+upper+digits',
+          alphabet: LOWER + UPPER + DIGITS
+        },{
+          title: 'lower+upper+digits+special',
+          alphabet: LOWER + UPPER + DIGITS + SPECIAL
+        }];
+
+        document.body.innerHTML = '';
+
+        insertLinks();
+
+        groups.forEach(function(group) {
+          var h1 = document.createElement('h1');
+          h1.appendChild(document.createTextNode(group.title));
+          document.body.appendChild(h1);
+          for(var i = 0; i < COUNT; i++) {
+            var div = document.createElement('div');
+            var text = document.createTextNode(generatePassword(group.alphabet, length));
+            div.appendChild(text);
+            document.body.appendChild(div);
+          }
+        });
+      };
+
+      window.onload = function() {
+        var length = getLength();
+        populate(length);
+      };
+    </script>
+  </head>
+  <body>
+  </body>
+</html>
